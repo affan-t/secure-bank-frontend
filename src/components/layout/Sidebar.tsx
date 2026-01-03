@@ -71,19 +71,23 @@ export function Sidebar() {
         isRTL ? 'right-0' : 'left-0'
       )}
     >
-      {/* Logo */}
-      <div className="flex items-center justify-center p-3 border-b border-sidebar-border min-h-[88px]">
-        {collapsed ? (
-          <div className="w-16 h-16 rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0f172a] p-1">
-            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-contain" />
-          </div>
-        ) : (
-          <div className="flex items-center gap-3 w-full px-2">
-            <div className="w-14 h-14 rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0f172a] p-1">
-              <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-contain" />
-            </div>
-            <span className="font-display font-bold text-xl">NexBank</span>
-          </div>
+      {/* Logo - Always visible */}
+      <div className={cn(
+        'flex items-center border-b border-sidebar-border transition-all duration-300',
+        collapsed ? 'justify-center p-2 min-h-[90px]' : 'justify-start p-4 min-h-[90px]'
+      )}>
+        <div className={cn(
+          'rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0c1929]',
+          collapsed ? 'w-16 h-16' : 'w-14 h-14'
+        )}>
+          <img 
+            src={nexbankLogo} 
+            alt="NexBank" 
+            className="w-full h-full object-contain p-1" 
+          />
+        </div>
+        {!collapsed && (
+          <span className="font-display font-bold text-xl ml-3">NexBank</span>
         )}
       </div>
 
