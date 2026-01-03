@@ -101,7 +101,7 @@ export default function Cards() {
                   <p className="font-mono text-lg md:text-xl tracking-widest">
                     {showDetails
                       ? card.number
-                      : card.number.replace(/\d(?=\d{4})/g, '•')}
+                      : '•••• •••• •••• ' + card.number.slice(-4)}
                   </p>
                 </div>
 
@@ -114,6 +114,10 @@ export default function Cards() {
                   <div className="text-right">
                     <p className="text-xs text-white/60">Expires</p>
                     <p className="font-semibold">{card.expiry}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-white/60">CVV</p>
+                    <p className="font-semibold">{showDetails ? '321' : '•••'}</p>
                   </div>
                   <div className="text-right">
                     {card.type === 'visa' ? (
