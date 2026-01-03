@@ -72,16 +72,17 @@ export function Sidebar() {
       )}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
-        <div className={cn('flex items-center gap-3 transition-opacity duration-300', collapsed && 'opacity-0 w-0 overflow-hidden')}>
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow">
+      <div className="flex items-center justify-center p-4 border-b border-sidebar-border min-h-[72px]">
+        {collapsed ? (
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-glow flex-shrink-0">
             <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
-          <span className="font-display font-bold text-xl">NexBank</span>
-        </div>
-        {collapsed && (
-          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow mx-auto">
-            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
+        ) : (
+          <div className="flex items-center gap-3 w-full">
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow flex-shrink-0">
+              <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
+            </div>
+            <span className="font-display font-bold text-xl">NexBank</span>
           </div>
         )}
       </div>
