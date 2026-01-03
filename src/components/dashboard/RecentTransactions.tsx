@@ -1,6 +1,18 @@
-import { transactions, Transaction } from '@/data/bankData';
+import { transactions, Transaction, formatCurrency } from '@/data/bankData';
 import { cn } from '@/lib/utils';
-import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, ShoppingCart, Banknote, Film, Zap, Music, RefreshCw, Home, Coffee, Car, Gift } from 'lucide-react';
+
+const iconMap: Record<string, any> = {
+  shopping: ShoppingCart,
+  income: Banknote,
+  entertainment: Film,
+  utilities: Zap,
+  transfer: RefreshCw,
+  housing: Home,
+  food: Coffee,
+  transport: Car,
+  rewards: Gift,
+};
 
 interface TransactionItemProps {
   transaction: Transaction;
@@ -9,6 +21,7 @@ interface TransactionItemProps {
 
 function TransactionItem({ transaction, index }: TransactionItemProps) {
   const isCredit = transaction.type === 'credit';
+  const Icon = iconMap[transaction.icon] || ShoppingCart;
   
   return (
     <div
@@ -17,10 +30,10 @@ function TransactionItem({ transaction, index }: TransactionItemProps) {
     >
       {/* Icon */}
       <div className={cn(
-        'w-12 h-12 rounded-xl flex items-center justify-center text-xl',
+        'w-12 h-12 rounded-xl flex items-center justify-center',
         isCredit ? 'bg-success/10' : 'bg-secondary'
       )}>
-        {transaction.icon}
+        <Icon size={20} className={isCredit ? 'text-success' : 'text-muted-foreground'} />
       </div>
       
       {/* Details */}
@@ -41,7 +54,7 @@ function TransactionItem({ transaction, index }: TransactionItemProps) {
             'font-semibold',
             isCredit ? 'text-success' : 'text-foreground'
           )}>
-            {isCredit ? '+' : '-'}${transaction.amount.toLocaleString()}
+            {isCredit ? '+' : '-'}{formatCurrency(transaction.amount)}
           </span>
         </div>
         <span className={cn(

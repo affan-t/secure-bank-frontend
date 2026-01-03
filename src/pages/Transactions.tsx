@@ -1,10 +1,23 @@
 import { Header } from '@/components/layout/Header';
-import { transactions } from '@/data/bankData';
+import { transactions, formatCurrency } from '@/data/bankData';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { Search, Filter, Download, ArrowUpRight, ArrowDownLeft, Calendar } from 'lucide-react';
+import { Search, Filter, Download, ArrowUpRight, ArrowDownLeft, Calendar, ShoppingCart, Banknote, Film, Zap, RefreshCw, Home, Coffee, Car, Gift } from 'lucide-react';
+import { toast } from 'sonner';
 
 type FilterType = 'all' | 'credit' | 'debit';
+
+const iconMap: Record<string, any> = {
+  shopping: ShoppingCart,
+  income: Banknote,
+  entertainment: Film,
+  utilities: Zap,
+  transfer: RefreshCw,
+  housing: Home,
+  food: Coffee,
+  transport: Car,
+  rewards: Gift,
+};
 
 export default function Transactions() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +41,12 @@ export default function Transactions() {
     groups[date].push(transaction);
     return groups;
   }, {} as Record<string, typeof transactions>);
+
+  const handleExport = () => {
+    toast.success('Export started!', {
+      description: 'Your transaction history will be downloaded shortly.',
+    });
+  };
 
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
@@ -57,7 +76,10 @@ export default function Transactions() {
           <span className="font-medium">Filters</span>
         </button>
 
-        <button className="flex items-center gap-2 px-6 h-12 rounded-xl bg-card border border-border hover:border-primary transition-all duration-300">
+        <button 
+          onClick={handleExport}
+          className="flex items-center gap-2 px-6 h-12 rounded-xl bg-card border border-border hover:border-primary transition-all duration-300"
+        >
           <Download size={18} />
           <span className="font-medium hidden sm:inline">Export</span>
         </button>
@@ -95,7 +117,7 @@ export default function Transactions() {
           <div>
             <p className="text-sm text-muted-foreground">Income</p>
             <p className="text-xl font-bold text-success">
-              +${transactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0).toLocaleString()}
+              +{formatCurrency(transactions.filter(t => t.type === 'credit').reduce((sum, t) => sum + t.amount, 0))}
             </p>
           </div>
         </div>
@@ -107,7 +129,7 @@ export default function Transactions() {
           <div>
             <p className="text-sm text-muted-foreground">Expenses</p>
             <p className="text-xl font-bold text-destructive">
-              -${transactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0).toLocaleString()}
+              -{formatCurrency(transactions.filter(t => t.type === 'debit').reduce((sum, t) => sum + t.amount, 0))}
             </p>
           </div>
         </div>
@@ -129,54 +151,57 @@ export default function Transactions() {
           <div key={date} className="animate-fade-in" style={{ animationDelay: `${groupIndex * 100}ms` }}>
             <h3 className="text-sm font-medium text-muted-foreground mb-3">{date}</h3>
             <div className="bg-card rounded-2xl border border-border overflow-hidden">
-              {dayTransactions.map((transaction, index) => (
-                <div
-                  key={transaction.id}
-                  className={cn(
-                    'flex items-center gap-4 p-4 hover:bg-secondary/50 transition-all duration-300 cursor-pointer',
-                    index !== dayTransactions.length - 1 && 'border-b border-border'
-                  )}
-                >
-                  {/* Icon */}
-                  <div className={cn(
-                    'w-12 h-12 rounded-xl flex items-center justify-center text-xl',
-                    transaction.type === 'credit' ? 'bg-success/10' : 'bg-secondary'
-                  )}>
-                    {transaction.icon}
-                  </div>
+              {dayTransactions.map((transaction, index) => {
+                const Icon = iconMap[transaction.icon] || ShoppingCart;
+                return (
+                  <div
+                    key={transaction.id}
+                    className={cn(
+                      'flex items-center gap-4 p-4 hover:bg-secondary/50 transition-all duration-300 cursor-pointer',
+                      index !== dayTransactions.length - 1 && 'border-b border-border'
+                    )}
+                  >
+                    {/* Icon */}
+                    <div className={cn(
+                      'w-12 h-12 rounded-xl flex items-center justify-center',
+                      transaction.type === 'credit' ? 'bg-success/10' : 'bg-secondary'
+                    )}>
+                      <Icon size={20} className={transaction.type === 'credit' ? 'text-success' : 'text-muted-foreground'} />
+                    </div>
 
-                  {/* Details */}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground truncate">{transaction.description}</p>
-                    <p className="text-sm text-muted-foreground">{transaction.category}</p>
-                  </div>
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground truncate">{transaction.description}</p>
+                      <p className="text-sm text-muted-foreground">{transaction.category}</p>
+                    </div>
 
-                  {/* Amount & Status */}
-                  <div className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      {transaction.type === 'credit' ? (
-                        <ArrowDownLeft size={16} className="text-success" />
-                      ) : (
-                        <ArrowUpRight size={16} className="text-destructive" />
-                      )}
+                    {/* Amount & Status */}
+                    <div className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        {transaction.type === 'credit' ? (
+                          <ArrowDownLeft size={16} className="text-success" />
+                        ) : (
+                          <ArrowUpRight size={16} className="text-destructive" />
+                        )}
+                        <span className={cn(
+                          'font-semibold',
+                          transaction.type === 'credit' ? 'text-success' : 'text-foreground'
+                        )}>
+                          {transaction.type === 'credit' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                        </span>
+                      </div>
                       <span className={cn(
-                        'font-semibold',
-                        transaction.type === 'credit' ? 'text-success' : 'text-foreground'
+                        'text-xs px-2 py-0.5 rounded-full',
+                        transaction.status === 'completed' ? 'bg-success/10 text-success' :
+                        transaction.status === 'pending' ? 'bg-warning/10 text-warning' :
+                        'bg-destructive/10 text-destructive'
                       )}>
-                        {transaction.type === 'credit' ? '+' : '-'}${transaction.amount.toLocaleString()}
+                        {transaction.status}
                       </span>
                     </div>
-                    <span className={cn(
-                      'text-xs px-2 py-0.5 rounded-full',
-                      transaction.status === 'completed' ? 'bg-success/10 text-success' :
-                      transaction.status === 'pending' ? 'bg-warning/10 text-warning' :
-                      'bg-destructive/10 text-destructive'
-                    )}>
-                      {transaction.status}
-                    </span>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         ))}

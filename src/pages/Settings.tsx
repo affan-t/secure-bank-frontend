@@ -1,11 +1,17 @@
 import { Header } from '@/components/layout/Header';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/lib/utils';
-import { Moon, Sun, Bell, BellOff, Shield, Globe, Smartphone, Mail, LogOut, ChevronRight, Lock, Eye, CreditCard } from 'lucide-react';
+import { Moon, Sun, Bell, Shield, Globe, Smartphone, Mail, LogOut, ChevronRight, Lock, Eye, CreditCard, Check } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface SettingToggleProps {
   icon: React.ReactNode;
@@ -79,6 +85,13 @@ function SettingLink({ icon, title, description, onClick, danger }: SettingLinkP
   );
 }
 
+const languages = [
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
+  { code: 'zh', name: 'Chinese', nativeName: '中文' },
+];
+
 export default function Settings() {
   const { theme, toggleTheme } = useTheme();
   const { logout } = useAuth();
@@ -92,11 +105,30 @@ export default function Settings() {
     loginAlerts: true,
   });
 
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [showLanguageDialog, setShowLanguageDialog] = useState(false);
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
+
   const handleLogout = () => {
     logout();
     toast.success('Logged out successfully');
     navigate('/login');
   };
+
+  const handleLanguageChange = (langCode: string) => {
+    setSelectedLanguage(langCode);
+    const lang = languages.find(l => l.code === langCode);
+    toast.success(`Language changed to ${lang?.name}`);
+    setShowLanguageDialog(false);
+  };
+
+  const handlePasswordChange = () => {
+    toast.success('Password changed successfully');
+    setShowPasswordDialog(false);
+  };
+
+  const currentLanguage = languages.find(l => l.code === selectedLanguage);
 
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
@@ -150,21 +182,30 @@ export default function Settings() {
               title="Push Notifications"
               description="Receive instant alerts"
               enabled={settings.pushNotifications}
-              onToggle={() => setSettings(s => ({ ...s, pushNotifications: !s.pushNotifications }))}
+              onToggle={() => {
+                setSettings(s => ({ ...s, pushNotifications: !s.pushNotifications }));
+                toast.success(settings.pushNotifications ? 'Push notifications disabled' : 'Push notifications enabled');
+              }}
             />
             <SettingToggle
               icon={<Mail size={20} className="text-primary" />}
               title="Email Notifications"
               description="Get updates via email"
               enabled={settings.emailNotifications}
-              onToggle={() => setSettings(s => ({ ...s, emailNotifications: !s.emailNotifications }))}
+              onToggle={() => {
+                setSettings(s => ({ ...s, emailNotifications: !s.emailNotifications }));
+                toast.success(settings.emailNotifications ? 'Email notifications disabled' : 'Email notifications enabled');
+              }}
             />
             <SettingToggle
               icon={<Smartphone size={20} className="text-primary" />}
               title="SMS Notifications"
               description="Receive text messages"
               enabled={settings.smsNotifications}
-              onToggle={() => setSettings(s => ({ ...s, smsNotifications: !s.smsNotifications }))}
+              onToggle={() => {
+                setSettings(s => ({ ...s, smsNotifications: !s.smsNotifications }));
+                toast.success(settings.smsNotifications ? 'SMS notifications disabled' : 'SMS notifications enabled');
+              }}
             />
           </div>
         </div>
@@ -179,19 +220,26 @@ export default function Settings() {
               title="Biometric Login"
               description="Use fingerprint or face ID"
               enabled={settings.biometric}
-              onToggle={() => setSettings(s => ({ ...s, biometric: !s.biometric }))}
+              onToggle={() => {
+                setSettings(s => ({ ...s, biometric: !s.biometric }));
+                toast.success(settings.biometric ? 'Biometric login disabled' : 'Biometric login enabled');
+              }}
             />
             <SettingToggle
               icon={<Shield size={20} className="text-primary" />}
               title="Login Alerts"
               description="Get notified of new logins"
               enabled={settings.loginAlerts}
-              onToggle={() => setSettings(s => ({ ...s, loginAlerts: !s.loginAlerts }))}
+              onToggle={() => {
+                setSettings(s => ({ ...s, loginAlerts: !s.loginAlerts }));
+                toast.success(settings.loginAlerts ? 'Login alerts disabled' : 'Login alerts enabled');
+              }}
             />
             <SettingLink
               icon={<Lock size={20} className="text-primary" />}
               title="Change Password"
               description="Update your password"
+              onClick={() => setShowPasswordDialog(true)}
             />
             <SettingLink
               icon={<CreditCard size={20} className="text-primary" />}
@@ -210,12 +258,14 @@ export default function Settings() {
             <SettingLink
               icon={<Globe size={20} className="text-primary" />}
               title="Language"
-              description="English (US)"
+              description={currentLanguage?.nativeName || 'English'}
+              onClick={() => setShowLanguageDialog(true)}
             />
             <SettingLink
               icon={<Shield size={20} className="text-primary" />}
               title="Privacy Policy"
               description="Read our privacy terms"
+              onClick={() => setShowPrivacyDialog(true)}
             />
             <SettingLink
               icon={<LogOut size={20} className="text-destructive" />}
@@ -231,8 +281,105 @@ export default function Settings() {
       {/* App Version */}
       <div className="text-center text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '300ms' }}>
         <p>NexBank Version 2.0.0</p>
-        <p className="mt-1">© 2024 NexBank. All rights reserved.</p>
+        <p className="mt-1">2024 NexBank. All rights reserved.</p>
       </div>
+
+      {/* Language Dialog */}
+      <Dialog open={showLanguageDialog} onOpenChange={setShowLanguageDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Select Language</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 mt-4">
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                className={cn(
+                  'w-full flex items-center justify-between p-4 rounded-xl transition-colors',
+                  selectedLanguage === lang.code
+                    ? 'bg-primary/10 border-2 border-primary'
+                    : 'bg-secondary/50 hover:bg-secondary'
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-medium text-foreground">{lang.name}</span>
+                  <span className="text-muted-foreground">({lang.nativeName})</span>
+                </div>
+                {selectedLanguage === lang.code && (
+                  <Check size={20} className="text-primary" />
+                )}
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Password Change Dialog */}
+      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Password</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Current Password</label>
+              <input
+                type="password"
+                placeholder="Enter current password"
+                className="w-full h-12 px-4 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">New Password</label>
+              <input
+                type="password"
+                placeholder="Enter new password"
+                className="w-full h-12 px-4 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Confirm Password</label>
+              <input
+                type="password"
+                placeholder="Confirm new password"
+                className="w-full h-12 px-4 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors"
+              />
+            </div>
+            <button
+              onClick={handlePasswordChange}
+              className="w-full h-12 rounded-xl gradient-bg text-white font-semibold hover:opacity-90 transition-opacity"
+            >
+              Update Password
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Privacy Policy Dialog */}
+      <Dialog open={showPrivacyDialog} onOpenChange={setShowPrivacyDialog}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Privacy Policy</DialogTitle>
+          </DialogHeader>
+          <div className="prose prose-sm dark:prose-invert mt-4 text-muted-foreground">
+            <h4 className="text-foreground">1. Information Collection</h4>
+            <p>We collect information you provide directly to us, such as when you create an account, make a transaction, or contact us for support.</p>
+            
+            <h4 className="text-foreground">2. Use of Information</h4>
+            <p>We use the information we collect to provide, maintain, and improve our services, process transactions, and send you technical notices.</p>
+            
+            <h4 className="text-foreground">3. Information Sharing</h4>
+            <p>We do not share your personal information with third parties except as described in this policy or with your consent.</p>
+            
+            <h4 className="text-foreground">4. Security</h4>
+            <p>We take reasonable measures to help protect your personal information from loss, theft, misuse, and unauthorized access.</p>
+            
+            <h4 className="text-foreground">5. Contact Us</h4>
+            <p>If you have any questions about this Privacy Policy, please contact us at support@nexbank.com</p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

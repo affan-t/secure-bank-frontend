@@ -1,4 +1,6 @@
 import { cn } from '@/lib/utils';
+import { Wallet, Building, CreditCard } from 'lucide-react';
+import { formatCurrency } from '@/data/bankData';
 
 interface BalanceCardProps {
   type: 'savings' | 'current' | 'credit' | 'total';
@@ -10,8 +12,16 @@ interface BalanceCardProps {
   index?: number;
 }
 
+const iconMap: Record<string, any> = {
+  savings: Wallet,
+  account: Building,
+  credit: CreditCard,
+  total: Wallet,
+};
+
 export function BalanceCard({ type, name, balance, accountNumber, change, icon, index = 0 }: BalanceCardProps) {
   const isNegative = balance < 0;
+  const Icon = iconMap[icon] || Wallet;
   
   const gradients = {
     savings: 'gradient-card',
@@ -35,7 +45,9 @@ export function BalanceCard({ type, name, balance, accountNumber, change, icon, 
       {/* Content */}
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-3xl">{icon}</span>
+          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+            <Icon size={24} className="text-white" />
+          </div>
           {accountNumber && (
             <span className="text-sm text-white/70 font-mono">{accountNumber}</span>
           )}
@@ -48,7 +60,7 @@ export function BalanceCard({ type, name, balance, accountNumber, change, icon, 
             'text-2xl md:text-3xl font-bold font-display animate-count-up',
             isNegative && 'text-red-200'
           )}>
-            {isNegative ? '-' : ''}${Math.abs(balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            {isNegative ? '-' : ''}{formatCurrency(Math.abs(balance))}
           </h3>
           {change !== undefined && (
             <span className={cn(

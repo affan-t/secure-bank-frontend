@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Eye, EyeOff, Mail, Lock, ArrowRight, Moon, Sun } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Moon, Sun, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -88,14 +88,14 @@ export default function Login() {
           
           {/* Features */}
           <div className="grid gap-6 w-full max-w-sm">
-            {['Secure Transactions', 'Instant Transfers', '24/7 Support'].map((feature, i) => (
+              {['Secure Transactions', 'Instant Transfers', '24/7 Support'].map((feature, i) => (
               <div
                 key={feature}
                 className="flex items-center gap-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl animate-slide-right"
                 style={{ animationDelay: `${i * 150}ms` }}
               >
                 <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                  <span className="text-lg">✓</span>
+                  <Check size={18} />
                 </div>
                 <span className="font-medium">{feature}</span>
               </div>
@@ -219,30 +219,6 @@ export default function Login() {
                 )}
               </button>
             </form>
-
-            {/* Divider */}
-            <div className="flex items-center gap-4 my-8 animate-fade-in" style={{ animationDelay: '500ms' }}>
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-sm text-muted-foreground">or continue with</span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-
-            {/* Social Logins */}
-            <div className="grid grid-cols-3 gap-4 animate-slide-up" style={{ animationDelay: '600ms' }}>
-              {[
-                { name: 'Google', icon: '🔵' },
-                { name: 'Apple', icon: '🍎' },
-                { name: 'Facebook', icon: '📘' },
-              ].map((provider) => (
-                <button
-                  key={provider.name}
-                  type="button"
-                  className="h-14 rounded-xl bg-secondary hover:bg-secondary/80 flex items-center justify-center gap-2 transition-all duration-300 hover:scale-105"
-                >
-                  <span className="text-xl">{provider.icon}</span>
-                </button>
-              ))}
-            </div>
 
             {/* Sign Up Link */}
             <p className="text-center text-muted-foreground mt-8 animate-fade-in" style={{ animationDelay: '700ms' }}>

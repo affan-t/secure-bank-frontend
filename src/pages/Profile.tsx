@@ -1,7 +1,7 @@
 import { Header } from '@/components/layout/Header';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
-import { Camera, Mail, Phone, MapPin, Calendar, Shield, Edit2, Check } from 'lucide-react';
+import { Camera, Mail, Phone, MapPin, Calendar, Shield, Edit2, Check, CheckCircle, Star } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -9,10 +9,10 @@ export default function Profile() {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || 'Sarah Johnson',
-    email: user?.email || 'sarah.johnson@email.com',
-    phone: user?.phone || '+1 (555) 123-4567',
-    address: '123 Finance Street, New York, NY 10001',
+    name: user?.name || 'Ahmed Raza',
+    email: user?.email || 'ahmed.raza@email.com',
+    phone: user?.phone || '+92 300 1234567',
+    address: '123 Shahrah-e-Faisal, Karachi, Pakistan',
   });
 
   const handleSave = () => {
@@ -31,7 +31,7 @@ export default function Profile() {
             {/* Avatar */}
             <div className="relative inline-block mb-6">
               <img
-                src={user?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=face'}
+                src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover ring-4 ring-primary/20"
               />
@@ -44,11 +44,11 @@ export default function Profile() {
             <p className="text-muted-foreground mb-4">Premium Member</p>
 
             <div className="flex items-center justify-center gap-2 mb-6">
-              <span className="px-3 py-1 rounded-full bg-success/10 text-success text-sm font-medium">
-                ✓ Verified
+              <span className="px-3 py-1 rounded-full bg-success/10 text-success text-sm font-medium flex items-center gap-1">
+                <CheckCircle size={14} /> Verified
               </span>
-              <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                ★ Gold
+              <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium flex items-center gap-1">
+                <Star size={14} /> Gold
               </span>
             </div>
 

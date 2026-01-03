@@ -1,9 +1,15 @@
 import { Header } from '@/components/layout/Header';
-import { cards } from '@/data/bankData';
+import { cards, formatCurrency } from '@/data/bankData';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { Eye, EyeOff, Snowflake, Copy, Settings, Plus, CreditCard, Wifi } from 'lucide-react';
+import { Eye, EyeOff, Snowflake, Copy, Settings, Plus, Wifi, CreditCard, Shield, Globe, Bell } from 'lucide-react';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 export default function Cards() {
   const [selectedCard, setSelectedCard] = useState(cards[0]);
@@ -11,6 +17,14 @@ export default function Cards() {
   const [cardStates, setCardStates] = useState<Record<string, boolean>>(
     cards.reduce((acc, card) => ({ ...acc, [card.id]: card.frozen }), {})
   );
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showAddCardDialog, setShowAddCardDialog] = useState(false);
+  const [cardSettings, setCardSettings] = useState({
+    onlinePayments: true,
+    international: true,
+    atmWithdrawal: true,
+    contactless: true,
+  });
 
   const toggleFreeze = (cardId: string) => {
     setCardStates(prev => ({ ...prev, [cardId]: !prev[cardId] }));
@@ -22,6 +36,13 @@ export default function Cards() {
   const copyCardNumber = () => {
     navigator.clipboard.writeText(selectedCard.number.replace(/\s/g, ''));
     toast.success('Card number copied!');
+  };
+
+  const handleAddCard = () => {
+    toast.success('Card request submitted!', {
+      description: 'We will process your request within 3-5 business days.',
+    });
+    setShowAddCardDialog(false);
   };
 
   return (
@@ -110,7 +131,10 @@ export default function Cards() {
           ))}
 
           {/* Add Card */}
-          <div className="flex-shrink-0 w-80 md:w-96 h-52 md:h-56 rounded-2xl border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-300 group animate-fade-in">
+          <div 
+            onClick={() => setShowAddCardDialog(true)}
+            className="flex-shrink-0 w-80 md:w-96 h-52 md:h-56 rounded-2xl border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all duration-300 group animate-fade-in"
+          >
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <Plus size={24} className="text-muted-foreground group-hover:text-primary" />
@@ -155,7 +179,10 @@ export default function Cards() {
           </span>
         </button>
 
-        <button className="flex flex-col items-center gap-3 p-6 bg-card rounded-2xl border border-border hover:border-primary transition-all duration-300 hover-lift">
+        <button 
+          onClick={() => setShowSettingsDialog(true)}
+          className="flex flex-col items-center gap-3 p-6 bg-card rounded-2xl border border-border hover:border-primary transition-all duration-300 hover-lift"
+        >
           <Settings size={24} className="text-primary" />
           <span className="font-medium text-foreground">Card Settings</span>
         </button>
@@ -192,7 +219,7 @@ export default function Cards() {
               <div className="flex justify-between mb-2">
                 <span className="text-muted-foreground">Spent</span>
                 <span className="font-medium text-foreground">
-                  ${selectedCard.balance.toLocaleString()} / ${selectedCard.limit.toLocaleString()}
+                  {formatCurrency(selectedCard.balance)} / {formatCurrency(selectedCard.limit)}
                 </span>
               </div>
               <div className="h-3 bg-secondary rounded-full overflow-hidden">
@@ -204,7 +231,7 @@ export default function Cards() {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Daily Limit</span>
-              <span className="font-medium text-foreground">$5,000</span>
+              <span className="font-medium text-foreground">{formatCurrency(500000)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Online Payments</span>
@@ -217,6 +244,155 @@ export default function Cards() {
           </div>
         </div>
       </div>
+
+      {/* Card Settings Dialog */}
+      <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Card Settings</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Globe size={20} className="text-primary" />
+                <div>
+                  <p className="font-medium text-foreground">Online Payments</p>
+                  <p className="text-sm text-muted-foreground">Enable online transactions</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setCardSettings(s => ({ ...s, onlinePayments: !s.onlinePayments }));
+                  toast.success(cardSettings.onlinePayments ? 'Online payments disabled' : 'Online payments enabled');
+                }}
+                className={cn(
+                  'w-12 h-6 rounded-full transition-all duration-300 relative',
+                  cardSettings.onlinePayments ? 'bg-primary' : 'bg-muted'
+                )}
+              >
+                <div className={cn(
+                  'w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all duration-300 shadow-md',
+                  cardSettings.onlinePayments ? 'left-6' : 'left-0.5'
+                )} />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Globe size={20} className="text-primary" />
+                <div>
+                  <p className="font-medium text-foreground">International</p>
+                  <p className="text-sm text-muted-foreground">Allow foreign transactions</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setCardSettings(s => ({ ...s, international: !s.international }));
+                  toast.success(cardSettings.international ? 'International transactions disabled' : 'International transactions enabled');
+                }}
+                className={cn(
+                  'w-12 h-6 rounded-full transition-all duration-300 relative',
+                  cardSettings.international ? 'bg-primary' : 'bg-muted'
+                )}
+              >
+                <div className={cn(
+                  'w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all duration-300 shadow-md',
+                  cardSettings.international ? 'left-6' : 'left-0.5'
+                )} />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+              <div className="flex items-center gap-3">
+                <CreditCard size={20} className="text-primary" />
+                <div>
+                  <p className="font-medium text-foreground">ATM Withdrawal</p>
+                  <p className="text-sm text-muted-foreground">Enable cash withdrawals</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setCardSettings(s => ({ ...s, atmWithdrawal: !s.atmWithdrawal }));
+                  toast.success(cardSettings.atmWithdrawal ? 'ATM withdrawals disabled' : 'ATM withdrawals enabled');
+                }}
+                className={cn(
+                  'w-12 h-6 rounded-full transition-all duration-300 relative',
+                  cardSettings.atmWithdrawal ? 'bg-primary' : 'bg-muted'
+                )}
+              >
+                <div className={cn(
+                  'w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all duration-300 shadow-md',
+                  cardSettings.atmWithdrawal ? 'left-6' : 'left-0.5'
+                )} />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+              <div className="flex items-center gap-3">
+                <Wifi size={20} className="text-primary" />
+                <div>
+                  <p className="font-medium text-foreground">Contactless</p>
+                  <p className="text-sm text-muted-foreground">Tap to pay</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setCardSettings(s => ({ ...s, contactless: !s.contactless }));
+                  toast.success(cardSettings.contactless ? 'Contactless disabled' : 'Contactless enabled');
+                }}
+                className={cn(
+                  'w-12 h-6 rounded-full transition-all duration-300 relative',
+                  cardSettings.contactless ? 'bg-primary' : 'bg-muted'
+                )}
+              >
+                <div className={cn(
+                  'w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all duration-300 shadow-md',
+                  cardSettings.contactless ? 'left-6' : 'left-0.5'
+                )} />
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Card Dialog */}
+      <Dialog open={showAddCardDialog} onOpenChange={setShowAddCardDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Request New Card</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Card Type</label>
+              <select className="w-full h-12 px-4 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors">
+                <option value="debit">Debit Card</option>
+                <option value="credit">Credit Card</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Card Network</label>
+              <select className="w-full h-12 px-4 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors">
+                <option value="visa">Visa</option>
+                <option value="mastercard">Mastercard</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-foreground mb-2 block">Delivery Address</label>
+              <textarea
+                placeholder="Enter your delivery address"
+                rows={3}
+                className="w-full px-4 py-3 rounded-xl bg-secondary/50 border-2 border-transparent focus:border-primary transition-colors resize-none"
+              />
+            </div>
+            <button
+              onClick={handleAddCard}
+              className="w-full h-12 rounded-xl gradient-bg text-white font-semibold hover:opacity-90 transition-opacity"
+            >
+              Request Card
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

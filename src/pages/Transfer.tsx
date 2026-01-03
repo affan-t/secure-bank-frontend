@@ -1,11 +1,17 @@
 import { Header } from '@/components/layout/Header';
-import { accounts, contacts } from '@/data/bankData';
+import { accounts, contacts, formatCurrency } from '@/data/bankData';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
-import { ArrowRight, Check, User, Building, CreditCard, ChevronDown } from 'lucide-react';
+import { ArrowRight, Check, User, Building, CreditCard, ChevronDown, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
 type TransferType = 'own' | 'contact' | 'other';
+
+const iconMap: Record<string, any> = {
+  savings: Wallet,
+  account: Building,
+  credit: CreditCard,
+};
 
 export default function Transfer() {
   const [transferType, setTransferType] = useState<TransferType>('contact');
@@ -34,7 +40,7 @@ export default function Transfer() {
     setIsSuccess(true);
 
     toast.success('Transfer successful!', {
-      description: `$${amount} sent to ${toContact.name}`,
+      description: `${formatCurrency(parseFloat(amount))} sent to ${toContact.name}`,
     });
   };
 
@@ -47,7 +53,7 @@ export default function Transfer() {
           </div>
           <h2 className="text-3xl font-display font-bold text-foreground mb-2">Transfer Successful!</h2>
           <p className="text-muted-foreground mb-2">You've sent</p>
-          <p className="text-4xl font-bold text-foreground mb-2">${amount}</p>
+          <p className="text-4xl font-bold text-foreground mb-2">{formatCurrency(parseFloat(amount))}</p>
           <p className="text-muted-foreground mb-8">to {toContact.name}</p>
           <button
             onClick={() => {
@@ -103,7 +109,14 @@ export default function Transfer() {
                 className="w-full flex items-center justify-between p-4 rounded-xl bg-secondary hover:bg-secondary/80 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <span className="text-2xl">{fromAccount.icon}</span>
+                  {(() => {
+                    const Icon = iconMap[fromAccount.icon] || Wallet;
+                    return (
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <Icon size={20} className="text-primary" />
+                      </div>
+                    );
+                  })()}
                   <div className="text-left">
                     <p className="font-medium text-foreground">{fromAccount.name}</p>
                     <p className="text-sm text-muted-foreground">{fromAccount.number}</p>
@@ -111,7 +124,7 @@ export default function Transfer() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-foreground">
-                    ${fromAccount.balance.toLocaleString()}
+                    {formatCurrency(fromAccount.balance)}
                   </span>
                   <ChevronDown size={18} className={cn('transition-transform', showFromDropdown && 'rotate-180')} />
                 </div>
@@ -119,25 +132,30 @@ export default function Transfer() {
 
               {showFromDropdown && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-card rounded-xl border border-border shadow-xl z-10 overflow-hidden animate-slide-down">
-                  {accounts.filter(a => a.id !== fromAccount.id && a.balance > 0).map((account) => (
-                    <button
-                      key={account.id}
-                      onClick={() => {
-                        setFromAccount(account);
-                        setShowFromDropdown(false);
-                      }}
-                      className="w-full flex items-center justify-between p-4 hover:bg-secondary transition-colors"
-                    >
-                      <div className="flex items-center gap-4">
-                        <span className="text-xl">{account.icon}</span>
-                        <div className="text-left">
-                          <p className="font-medium text-foreground">{account.name}</p>
-                          <p className="text-sm text-muted-foreground">{account.number}</p>
+                  {accounts.filter(a => a.id !== fromAccount.id && a.balance > 0).map((account) => {
+                    const Icon = iconMap[account.icon] || Wallet;
+                    return (
+                      <button
+                        key={account.id}
+                        onClick={() => {
+                          setFromAccount(account);
+                          setShowFromDropdown(false);
+                        }}
+                        className="w-full flex items-center justify-between p-4 hover:bg-secondary transition-colors"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <Icon size={20} className="text-primary" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-medium text-foreground">{account.name}</p>
+                            <p className="text-sm text-muted-foreground">{account.number}</p>
+                          </div>
                         </div>
-                      </div>
-                      <span className="font-medium">${account.balance.toLocaleString()}</span>
-                    </button>
-                  ))}
+                        <span className="font-medium">{formatCurrency(account.balance)}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -147,23 +165,23 @@ export default function Transfer() {
           <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
             <label className="text-sm font-medium text-muted-foreground mb-4 block">Amount</label>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-3xl font-bold text-foreground">$</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-bold text-foreground">PKR</span>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full h-20 pl-12 pr-4 text-3xl font-bold text-foreground bg-transparent border-2 border-border rounded-xl focus:border-primary focus:ring-0 transition-colors"
+                placeholder="0"
+                className="w-full h-20 pl-20 pr-4 text-3xl font-bold text-foreground bg-transparent border-2 border-border rounded-xl focus:border-primary focus:ring-0 transition-colors"
               />
             </div>
             <div className="flex gap-2 mt-4">
-              {[100, 250, 500, 1000].map((preset) => (
+              {[10000, 25000, 50000, 100000].map((preset) => (
                 <button
                   key={preset}
                   onClick={() => setAmount(preset.toString())}
                   className="flex-1 py-2 rounded-lg bg-secondary hover:bg-primary hover:text-primary-foreground transition-all duration-300 text-sm font-medium"
                 >
-                  ${preset}
+                  {formatCurrency(preset)}
                 </button>
               ))}
             </div>
@@ -188,7 +206,7 @@ export default function Transfer() {
             
             {/* Recent Contacts */}
             <div className="grid grid-cols-4 gap-4 mb-6">
-              {contacts.map((contact, index) => (
+              {contacts.map((contact) => (
                 <button
                   key={contact.id}
                   onClick={() => setToContact(contact)}
@@ -233,7 +251,7 @@ export default function Transfer() {
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Amount</span>
-                <span className="font-medium text-foreground">${amount || '0.00'}</span>
+                <span className="font-medium text-foreground">{amount ? formatCurrency(parseFloat(amount)) : 'PKR 0'}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Transfer Fee</span>
@@ -242,7 +260,7 @@ export default function Transfer() {
               <div className="h-px bg-border my-2" />
               <div className="flex justify-between">
                 <span className="font-medium text-foreground">Total</span>
-                <span className="font-bold text-lg text-foreground">${amount || '0.00'}</span>
+                <span className="font-bold text-lg text-foreground">{amount ? formatCurrency(parseFloat(amount)) : 'PKR 0'}</span>
               </div>
             </div>
           </div>
