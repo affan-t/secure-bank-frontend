@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 
 export type Language = 'en' | 'ur' | 'ar' | 'zh';
 
@@ -133,6 +133,24 @@ const translations: Translations = {
     error: 'Error',
     success: 'Success',
     pkr: 'PKR',
+    
+    // Transaction Slip
+    transactionReceipt: 'Transaction Receipt',
+    totalAmount: 'Total Amount',
+    transactionId: 'Transaction ID',
+    date: 'Date',
+    time: 'Time',
+    provider: 'Provider',
+    consumerNumber: 'Consumer Number',
+    consumerName: 'Consumer Name',
+    operator: 'Operator',
+    package: 'Package',
+    validity: 'Validity',
+    fromAccount: 'From Account',
+    toAccount: 'To Account',
+    beneficiaryName: 'Beneficiary Name',
+    reference: 'Reference',
+    downloadReceipt: 'Download Receipt',
   },
   ur: {
     // Navigation
@@ -258,6 +276,24 @@ const translations: Translations = {
     error: 'خرابی',
     success: 'کامیابی',
     pkr: 'روپے',
+    
+    // Transaction Slip
+    transactionReceipt: 'ٹرانزیکشن رسید',
+    totalAmount: 'کل رقم',
+    transactionId: 'ٹرانزیکشن آئی ڈی',
+    date: 'تاریخ',
+    time: 'وقت',
+    provider: 'فراہم کنندہ',
+    consumerNumber: 'صارف نمبر',
+    consumerName: 'صارف کا نام',
+    operator: 'آپریٹر',
+    package: 'پیکج',
+    validity: 'میعاد',
+    fromAccount: 'اکاؤنٹ سے',
+    toAccount: 'اکاؤنٹ میں',
+    beneficiaryName: 'وصول کنندہ کا نام',
+    reference: 'حوالہ',
+    downloadReceipt: 'رسید ڈاؤن لوڈ کریں',
   },
   ar: {
     // Navigation
