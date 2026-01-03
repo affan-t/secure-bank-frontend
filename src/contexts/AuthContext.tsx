@@ -23,10 +23,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const demoUser: User = {
   id: '1',
-  name: 'Sarah Johnson',
-  email: 'sarah.johnson@email.com',
-  avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face',
-  phone: '+1 (555) 123-4567',
+  name: 'Ahmed Raza',
+  email: 'ahmed.raza@email.com',
+  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+  phone: '+92 300 1234567',
   accountNumber: '****4582',
   memberSince: 'January 2020',
 };
