@@ -110,8 +110,8 @@ export default function Login() {
         {/* Header */}
         <div className="flex justify-between items-center p-6">
           <div className="lg:hidden flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-card flex items-center justify-center shadow-glow">
-              <span className="text-xl font-bold text-white">N</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow">
+              <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
             </div>
             <span className="font-display font-bold text-xl">NexBank</span>
           </div>

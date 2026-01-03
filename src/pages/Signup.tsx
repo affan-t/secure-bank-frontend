@@ -5,6 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Moon, Sun, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import nexbankLogo from '@/assets/nexbank-logo.png';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -83,8 +84,8 @@ export default function Signup() {
         </div>
         
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
-          <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center mb-8 shadow-2xl animate-bounce-soft">
-            <span className="text-4xl font-bold">N</span>
+          <div className="w-28 h-28 rounded-2xl overflow-hidden flex items-center justify-center mb-8 shadow-2xl animate-bounce-soft">
+            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-5xl font-display font-bold mb-4 text-center">Join NexBank</h1>
           <p className="text-xl text-white/80 text-center max-w-md mb-12">
@@ -117,8 +118,8 @@ export default function Signup() {
       <div className="w-full lg:w-1/2 flex flex-col bg-background overflow-y-auto">
         <div className="flex justify-between items-center p-6">
           <div className="lg:hidden flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-card flex items-center justify-center shadow-glow">
-              <span className="text-xl font-bold text-white">N</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow">
+              <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
             </div>
             <span className="font-display font-bold text-xl">NexBank</span>
           </div>
