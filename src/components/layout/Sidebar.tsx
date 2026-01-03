@@ -16,13 +16,39 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useState } from 'react';
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+// Create Sidebar Context for sharing collapsed state
+interface SidebarContextType {
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+}
+
+const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+
+export function useSidebar() {
+  const context = useContext(SidebarContext);
+  if (!context) {
+    return { collapsed: false, setCollapsed: () => {} };
+  }
+  return context;
+}
+
+export function SidebarProvider({ children }: { children: ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
+  
+  return (
+    <SidebarContext.Provider value={{ collapsed, setCollapsed }}>
+      {children}
+    </SidebarContext.Provider>
+  );
+}
 
 export function Sidebar() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { t, isRTL } = useLanguage();
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, setCollapsed } = useSidebar();
 
   const navItems = [
     { path: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },

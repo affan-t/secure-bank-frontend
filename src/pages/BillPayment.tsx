@@ -5,6 +5,19 @@ import { formatCurrency } from '@/data/bankData';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 import { Check, Zap, Flame, Droplets, Phone, Wifi, Tv, Building2, ArrowRight, Receipt } from 'lucide-react';
+import { TransactionSlip } from '@/components/TransactionSlip';
+
+interface TransactionDetails {
+  type: 'bill' | 'recharge' | 'transfer';
+  transactionId: string;
+  date: string;
+  time: string;
+  amount: number;
+  status: 'success' | 'failed';
+  provider?: string;
+  consumerNumber?: string;
+  consumerName?: string;
+}
 
 interface Provider {
   id: string;
@@ -45,6 +58,8 @@ export default function BillPayment() {
   const [consumerNumber, setConsumerNumber] = useState('');
   const [billFetched, setBillFetched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSlip, setShowSlip] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
   const [billDetails, setBillDetails] = useState({
     amount: 0,
     dueDate: '',
@@ -79,6 +94,21 @@ export default function BillPayment() {
     setIsLoading(true);
     
     setTimeout(() => {
+      const now = new Date();
+      const txnDetails: TransactionDetails = {
+        type: 'bill',
+        transactionId: `TXN${Date.now()}`,
+        date: now.toLocaleDateString('en-PK'),
+        time: now.toLocaleTimeString('en-PK'),
+        amount: billDetails.amount,
+        status: 'success',
+        provider: selectedProvider?.name,
+        consumerNumber: consumerNumber,
+        consumerName: billDetails.consumerName,
+      };
+      
+      setTransactionDetails(txnDetails);
+      setShowSlip(true);
       toast.success(t('paymentSuccess'), {
         description: `${formatCurrency(billDetails.amount)} paid to ${selectedProvider?.name}`,
       });
@@ -92,6 +122,15 @@ export default function BillPayment() {
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
       <Header title={t('billPayment')} subtitle="Pay your utility bills instantly" />
+      
+      {/* Transaction Slip Modal */}
+      {transactionDetails && (
+        <TransactionSlip
+          isOpen={showSlip}
+          onClose={() => setShowSlip(false)}
+          transactionDetails={transactionDetails}
+        />
+      )}
 
       {/* Category Filters */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin">

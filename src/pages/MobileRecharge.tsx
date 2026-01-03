@@ -5,6 +5,20 @@ import { formatCurrency } from '@/data/bankData';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
 import { Check, Smartphone, Phone, Zap, Clock, Wifi, Gift } from 'lucide-react';
+import { TransactionSlip } from '@/components/TransactionSlip';
+
+interface TransactionDetails {
+  type: 'bill' | 'recharge' | 'transfer';
+  transactionId: string;
+  date: string;
+  time: string;
+  amount: number;
+  status: 'success' | 'failed';
+  operator?: string;
+  mobileNumber?: string;
+  packageName?: string;
+  validity?: string;
+}
 
 interface Operator {
   id: string;
@@ -73,6 +87,8 @@ export default function MobileRecharge() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [packageType, setPackageType] = useState<'prepaid' | 'bundle'>('bundle');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSlip, setShowSlip] = useState(false);
+  const [transactionDetails, setTransactionDetails] = useState<TransactionDetails | null>(null);
 
   const filteredPackages = selectedOperator
     ? packages[selectedOperator.id].filter(p => p.type === packageType)
@@ -92,6 +108,22 @@ export default function MobileRecharge() {
     setIsLoading(true);
 
     setTimeout(() => {
+      const now = new Date();
+      const txnDetails: TransactionDetails = {
+        type: 'recharge',
+        transactionId: `TXN${Date.now()}`,
+        date: now.toLocaleDateString('en-PK'),
+        time: now.toLocaleTimeString('en-PK'),
+        amount: selectedPackage.price,
+        status: 'success',
+        operator: selectedOperator.name,
+        mobileNumber: mobileNumber,
+        packageName: selectedPackage.name,
+        validity: selectedPackage.validity,
+      };
+      
+      setTransactionDetails(txnDetails);
+      setShowSlip(true);
       toast.success(t('rechargeSuccess'), {
         description: `${selectedPackage.name} of ${formatCurrency(selectedPackage.price)} recharged to ${mobileNumber}`,
       });
@@ -104,6 +136,15 @@ export default function MobileRecharge() {
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
       <Header title={t('mobileRecharge')} subtitle="Recharge prepaid and buy bundles" />
+      
+      {/* Transaction Slip Modal */}
+      {transactionDetails && (
+        <TransactionSlip
+          isOpen={showSlip}
+          onClose={() => setShowSlip(false)}
+          transactionDetails={transactionDetails}
+        />
+      )}
 
       {/* Operator Selection */}
       <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up">
