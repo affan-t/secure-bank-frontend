@@ -5,6 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Moon, Sun, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import nexbankLogo from '@/assets/nexbank-logo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -78,8 +79,8 @@ export default function Login() {
         
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
-          <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-xl flex items-center justify-center mb-8 shadow-2xl animate-bounce-soft">
-            <span className="text-4xl font-bold">N</span>
+          <div className="w-28 h-28 rounded-2xl overflow-hidden flex items-center justify-center mb-8 shadow-2xl animate-bounce-soft">
+            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-5xl font-display font-bold mb-4 text-center">NexBank</h1>
           <p className="text-xl text-white/80 text-center max-w-md mb-12">
