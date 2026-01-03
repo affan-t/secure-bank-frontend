@@ -4,6 +4,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Mail, ArrowLeft, ArrowRight, Moon, Sun, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import nexbankLogo from '@/assets/nexbank-logo.png';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -57,8 +58,8 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md relative z-10 animate-scale-in">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl gradient-card flex items-center justify-center shadow-glow">
-            <span className="text-2xl font-bold text-white">N</span>
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-glow bg-[#0c1929]">
+            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-contain p-0.5" />
           </div>
           <span className="font-display font-bold text-2xl">NexBank</span>
         </div>
