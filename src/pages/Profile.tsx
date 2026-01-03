@@ -3,10 +3,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { Camera, Mail, Phone, MapPin, Calendar, Shield, Edit2, Check, CheckCircle, Star } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function Profile() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || 'Ahmed Raza',
@@ -194,7 +196,10 @@ export default function Profile() {
                 </span>
               </div>
 
-              <button className="w-full flex items-center justify-between p-4 bg-secondary/50 rounded-xl hover:bg-secondary transition-colors">
+              <button 
+                onClick={() => navigate('/settings')}
+                className="w-full flex items-center justify-between p-4 bg-secondary/50 rounded-xl hover:bg-secondary transition-colors"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                     <Calendar size={20} className="text-primary" />

@@ -5,25 +5,27 @@ import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
 import { SpendingChart, CategoryBreakdown } from '@/components/dashboard/SpendingChart';
 import { accounts } from '@/data/bankData';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const totalBalance = accounts.reduce((acc, account) => acc + account.balance, 0);
 
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
       <Header 
-        title={`Good ${getTimeOfDay()}, ${user?.name?.split(' ')[0] || 'Sarah'}`}
-        subtitle="Here's your financial overview"
+        title={`${t('welcomeBack')}, ${user?.name?.split(' ')[0] || 'Ahmed'}`}
+        subtitle={t('accountOverview')}
       />
 
       {/* Balance Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <BalanceCard
           type="total"
-          name="Total Balance"
+          name={t('totalBalance')}
           balance={totalBalance}
-          icon="💎"
+          icon="total"
           change={12.5}
           index={0}
         />
@@ -42,7 +44,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-4">{t('quickActions')}</h3>
         <QuickActions />
       </div>
 
@@ -58,11 +60,4 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}
-
-function getTimeOfDay() {
-  const hour = new Date().getHours();
-  if (hour < 12) return 'Morning';
-  if (hour < 17) return 'Afternoon';
-  return 'Evening';
 }

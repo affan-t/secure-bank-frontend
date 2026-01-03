@@ -99,7 +99,7 @@ export default function Cards() {
                 {/* Card Number */}
                 <div>
                   <p className="font-mono text-lg md:text-xl tracking-widest">
-                    {showDetails && selectedCard.id === card.id
+                    {showDetails
                       ? card.number
                       : card.number.replace(/\d(?=\d{4})/g, '•')}
                   </p>

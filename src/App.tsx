@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -16,6 +17,8 @@ import Transactions from "./pages/Transactions";
 import Cards from "./pages/Cards";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import BillPayment from "./pages/BillPayment";
+import MobileRecharge from "./pages/MobileRecharge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +44,8 @@ function AppRoutes() {
         <Route path="transfer" element={<Transfer />} />
         <Route path="transactions" element={<Transactions />} />
         <Route path="cards" element={<Cards />} />
+        <Route path="bill-payment" element={<BillPayment />} />
+        <Route path="mobile-recharge" element={<MobileRecharge />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
       </Route>
@@ -53,15 +58,17 @@ function AppRoutes() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

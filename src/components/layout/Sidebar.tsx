@@ -11,30 +11,37 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Receipt,
+  Smartphone,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useState } from 'react';
-
-const navItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/accounts', label: 'Accounts', icon: Wallet },
-  { path: '/transfer', label: 'Transfer', icon: ArrowRightLeft },
-  { path: '/transactions', label: 'History', icon: History },
-  { path: '/cards', label: 'Cards', icon: CreditCard },
-  { path: '/profile', label: 'Profile', icon: User },
-  { path: '/settings', label: 'Settings', icon: Settings },
-];
 
 export function Sidebar() {
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { t, isRTL } = useLanguage();
   const [collapsed, setCollapsed] = useState(false);
+
+  const navItems = [
+    { path: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+    { path: '/accounts', label: t('accounts'), icon: Wallet },
+    { path: '/transfer', label: t('transfer'), icon: ArrowRightLeft },
+    { path: '/transactions', label: t('transactions'), icon: History },
+    { path: '/cards', label: t('cards'), icon: CreditCard },
+    { path: '/bill-payment', label: t('billPayment'), icon: Receipt },
+    { path: '/mobile-recharge', label: t('mobileRecharge'), icon: Smartphone },
+    { path: '/profile', label: t('profile'), icon: User },
+    { path: '/settings', label: t('settings'), icon: Settings },
+  ];
 
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 ease-smooth fixed left-0 top-0 z-40',
-        collapsed ? 'w-20' : 'w-64'
+        'hidden md:flex flex-col h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 ease-smooth fixed top-0 z-40',
+        collapsed ? 'w-20' : 'w-64',
+        isRTL ? 'right-0' : 'left-0'
       )}
     >
       {/* Logo */}
@@ -55,9 +62,16 @@ export function Sidebar() {
       {/* Collapse Button */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform"
+        className={cn(
+          'absolute top-20 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform',
+          isRTL ? '-left-3' : '-right-3'
+        )}
       >
-        {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        {isRTL ? (
+          collapsed ? <ChevronLeft size={14} /> : <ChevronRight size={14} />
+        ) : (
+          collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />
+        )}
       </button>
 
       {/* Navigation */}
@@ -89,7 +103,10 @@ export function Sidebar() {
                 {item.label}
               </span>
               {isActive && !collapsed && (
-                <div className="absolute right-2 w-1.5 h-1.5 bg-sidebar-primary-foreground rounded-full animate-pulse" />
+                <div className={cn(
+                  'absolute w-1.5 h-1.5 bg-sidebar-primary-foreground rounded-full animate-pulse',
+                  isRTL ? 'left-2' : 'right-2'
+                )} />
               )}
             </Link>
           );
@@ -123,7 +140,7 @@ export function Sidebar() {
           )}
         >
           <LogOut size={20} />
-          <span className={cn('font-medium', collapsed && 'hidden')}>Logout</span>
+          <span className={cn('font-medium', collapsed && 'hidden')}>{t('logout')}</span>
         </button>
       </div>
     </aside>

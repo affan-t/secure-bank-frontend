@@ -7,17 +7,19 @@ import {
   History,
   User,
 } from 'lucide-react';
-
-const navItems = [
-  { path: '/dashboard', label: 'Home', icon: LayoutDashboard },
-  { path: '/transactions', label: 'History', icon: History },
-  { path: '/transfer', label: 'Transfer', icon: ArrowRightLeft },
-  { path: '/cards', label: 'Cards', icon: CreditCard },
-  { path: '/profile', label: 'Profile', icon: User },
-];
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function BottomNav() {
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { path: '/dashboard', label: t('home'), icon: LayoutDashboard },
+    { path: '/transactions', label: t('transactions'), icon: History },
+    { path: '/transfer', label: t('transfer'), icon: ArrowRightLeft },
+    { path: '/cards', label: t('cards'), icon: CreditCard },
+    { path: '/profile', label: t('profile'), icon: User },
+  ];
 
   return (
     <nav className="bottom-nav">
