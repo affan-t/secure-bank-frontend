@@ -66,49 +66,60 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        'hidden md:flex flex-col h-screen bg-sidebar text-sidebar-foreground transition-all duration-300 ease-smooth fixed top-0 z-40',
-        collapsed ? 'w-20' : 'w-64',
+        'hidden md:flex flex-col h-screen bg-sidebar text-sidebar-foreground fixed top-0 z-40',
+        'transition-[width] duration-300 ease-in-out',
+        collapsed ? 'w-[80px]' : 'w-[260px]',
         isRTL ? 'right-0' : 'left-0'
       )}
     >
-      {/* Logo - Always visible */}
-      <div className={cn(
-        'flex items-center border-b border-sidebar-border transition-all duration-300',
-        collapsed ? 'justify-center p-2 min-h-[90px]' : 'justify-start p-4 min-h-[90px]'
-      )}>
+      {/* Logo Section */}
+      <div className="h-[88px] flex items-center border-b border-sidebar-border px-4">
         <div className={cn(
-          'rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0c1929]',
-          collapsed ? 'w-16 h-16' : 'w-14 h-14'
+          'flex items-center transition-all duration-300 ease-in-out',
+          collapsed ? 'justify-center w-full' : 'justify-start w-full gap-3'
         )}>
-          <img 
-            src={nexbankLogo} 
-            alt="NexBank" 
-            className="w-full h-full object-contain p-1" 
-          />
+          {/* Logo Icon - Always Visible */}
+          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0c1929]">
+            <img 
+              src={nexbankLogo} 
+              alt="NexBank" 
+              className="w-full h-full object-contain p-0.5" 
+            />
+          </div>
+          
+          {/* Logo Text - Hidden when collapsed */}
+          <span 
+            className={cn(
+              'font-display font-bold text-xl whitespace-nowrap transition-all duration-300 ease-in-out',
+              collapsed 
+                ? 'opacity-0 w-0 overflow-hidden' 
+                : 'opacity-100 w-auto'
+            )}
+          >
+            NexBank
+          </span>
         </div>
-        {!collapsed && (
-          <span className="font-display font-bold text-xl ml-3">NexBank</span>
-        )}
       </div>
 
-      {/* Collapse Button */}
+      {/* Collapse Toggle Button */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className={cn(
-          'absolute top-20 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform',
-          isRTL ? '-left-3' : '-right-3'
+          'absolute top-[100px] w-7 h-7 bg-primary rounded-full flex items-center justify-center',
+          'text-primary-foreground shadow-lg hover:scale-110 transition-transform z-50',
+          isRTL ? '-left-3.5' : '-right-3.5'
         )}
       >
         {isRTL ? (
-          collapsed ? <ChevronLeft size={14} /> : <ChevronRight size={14} />
+          collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />
         ) : (
-          collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />
+          collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />
         )}
       </button>
 
       {/* Navigation */}
-      <nav className="flex-1 py-6 px-3 space-y-2 overflow-y-auto scrollbar-thin">
-        {navItems.map((item, index) => {
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto overflow-x-hidden scrollbar-thin">
+        {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
           
@@ -116,28 +127,46 @@ export function Sidebar() {
             <Link
               key={item.path}
               to={item.path}
+              title={collapsed ? item.label : undefined}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden',
+                'flex items-center h-12 rounded-xl transition-all duration-200 group relative',
+                collapsed ? 'justify-center px-0' : 'justify-start px-4 gap-3',
                 isActive
                   ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-glow'
                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
               )}
-              style={{ animationDelay: `${index * 50}ms` }}
             >
+              {/* Active indicator shimmer */}
               {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer rounded-xl" />
               )}
-              <Icon size={20} className={cn('transition-transform duration-300', isActive && 'scale-110')} />
-              <span className={cn(
-                'font-medium transition-all duration-300',
-                collapsed && 'opacity-0 w-0 overflow-hidden'
-              )}>
+              
+              {/* Icon - Always Visible */}
+              <Icon 
+                size={22} 
+                className={cn(
+                  'flex-shrink-0 transition-transform duration-200 relative z-10',
+                  isActive && 'scale-110'
+                )} 
+              />
+              
+              {/* Label - Hidden when collapsed */}
+              <span 
+                className={cn(
+                  'font-medium whitespace-nowrap transition-all duration-300 ease-in-out relative z-10',
+                  collapsed 
+                    ? 'opacity-0 w-0 overflow-hidden' 
+                    : 'opacity-100 w-auto'
+                )}
+              >
                 {item.label}
               </span>
+              
+              {/* Active dot indicator */}
               {isActive && !collapsed && (
                 <div className={cn(
                   'absolute w-1.5 h-1.5 bg-sidebar-primary-foreground rounded-full animate-pulse',
-                  isRTL ? 'left-2' : 'right-2'
+                  isRTL ? 'left-3' : 'right-3'
                 )} />
               )}
             </Link>
@@ -145,34 +174,55 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* User Profile */}
-      <div className="p-4 border-t border-sidebar-border">
+      {/* User Profile Section */}
+      <div className="border-t border-sidebar-border p-3">
+        {/* User Info */}
         <div className={cn(
-          'flex items-center gap-3 p-3 rounded-xl bg-sidebar-accent/50 transition-all duration-300',
-          collapsed && 'justify-center'
+          'flex items-center h-14 rounded-xl bg-sidebar-accent/50 transition-all duration-300',
+          collapsed ? 'justify-center px-0' : 'justify-start px-3 gap-3'
         )}>
+          {/* Avatar - Always Visible */}
           <img
-            src={user?.avatar || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face'}
+            src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'}
             alt="User"
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-sidebar-primary/50"
+            className="w-10 h-10 rounded-full object-cover ring-2 ring-sidebar-primary/50 flex-shrink-0"
           />
-          {!collapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="font-medium truncate text-sm">{user?.name || 'Sarah Johnson'}</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">{user?.email || 'sarah@email.com'}</p>
-            </div>
-          )}
+          
+          {/* User Details - Hidden when collapsed */}
+          <div className={cn(
+            'flex-1 min-w-0 transition-all duration-300 ease-in-out',
+            collapsed 
+              ? 'opacity-0 w-0 overflow-hidden' 
+              : 'opacity-100 w-auto'
+          )}>
+            <p className="font-medium truncate text-sm">{user?.name || 'Ahmed Khan'}</p>
+            <p className="text-xs text-sidebar-foreground/60 truncate">{user?.email || 'ahmed@email.com'}</p>
+          </div>
         </div>
         
+        {/* Logout Button */}
         <button
           onClick={logout}
+          title={collapsed ? t('logout') : undefined}
           className={cn(
-            'flex items-center gap-3 w-full mt-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all duration-300',
-            collapsed && 'justify-center'
+            'flex items-center h-12 w-full mt-2 rounded-xl text-destructive hover:bg-destructive/10 transition-all duration-200',
+            collapsed ? 'justify-center px-0' : 'justify-start px-4 gap-3'
           )}
         >
-          <LogOut size={20} />
-          <span className={cn('font-medium', collapsed && 'hidden')}>{t('logout')}</span>
+          {/* Logout Icon - Always Visible */}
+          <LogOut size={20} className="flex-shrink-0" />
+          
+          {/* Logout Text - Hidden when collapsed */}
+          <span 
+            className={cn(
+              'font-medium whitespace-nowrap transition-all duration-300 ease-in-out',
+              collapsed 
+                ? 'opacity-0 w-0 overflow-hidden' 
+                : 'opacity-100 w-auto'
+            )}
+          >
+            {t('logout')}
+          </span>
         </button>
       </div>
     </aside>
