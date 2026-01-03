@@ -1,4 +1,5 @@
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Bell, Search, Moon, Sun, CreditCard, AlertCircle, Gift, Info, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useRef, useEffect } from 'react';
@@ -24,6 +25,7 @@ const getNotificationIcon = (type: Notification['type']) => {
 
 export function Header({ title, subtitle }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const { t, isRTL } = useLanguage();
   const [showSearch, setShowSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
@@ -118,9 +120,12 @@ export function Header({ title, subtitle }: HeaderProps) {
 
           {/* Notification Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 top-12 w-80 md:w-96 bg-card border border-border rounded-2xl shadow-xl z-50 animate-scale-in overflow-hidden">
+            <div className={cn(
+              'absolute top-12 w-80 md:w-96 bg-card border border-border rounded-2xl shadow-xl z-50 animate-scale-in overflow-hidden',
+              isRTL ? 'left-0' : 'right-0'
+            )}>
               <div className="flex items-center justify-between p-4 border-b border-border">
-                <h3 className="font-semibold text-foreground">Notifications</h3>
+                <h3 className="font-semibold text-foreground">{t('notifications')}</h3>
                 <div className="flex items-center gap-2">
                   {unreadCount > 0 && (
                     <button 

@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage, Language } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 import { Moon, Sun, Bell, Shield, Globe, Smartphone, Mail, LogOut, ChevronRight, Lock, Eye, CreditCard, Check } from 'lucide-react';
 import { useState } from 'react';
@@ -86,14 +87,15 @@ function SettingLink({ icon, title, description, onClick, danger }: SettingLinkP
 }
 
 const languages = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'ur', name: 'Urdu', nativeName: 'اردو' },
-  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文' },
+  { code: 'en' as Language, name: 'English', nativeName: 'English' },
+  { code: 'ur' as Language, name: 'Urdu', nativeName: 'اردو' },
+  { code: 'ar' as Language, name: 'Arabic', nativeName: 'العربية' },
+  { code: 'zh' as Language, name: 'Chinese', nativeName: '中文' },
 ];
 
 export default function Settings() {
   const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
   const { logout } = useAuth();
   const navigate = useNavigate();
   
@@ -105,7 +107,6 @@ export default function Settings() {
     loginAlerts: true,
   });
 
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [showLanguageDialog, setShowLanguageDialog] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
@@ -116,8 +117,8 @@ export default function Settings() {
     navigate('/login');
   };
 
-  const handleLanguageChange = (langCode: string) => {
-    setSelectedLanguage(langCode);
+  const handleLanguageChange = (langCode: Language) => {
+    setLanguage(langCode);
     const lang = languages.find(l => l.code === langCode);
     toast.success(`Language changed to ${lang?.name}`);
     setShowLanguageDialog(false);
@@ -128,16 +129,16 @@ export default function Settings() {
     setShowPasswordDialog(false);
   };
 
-  const currentLanguage = languages.find(l => l.code === selectedLanguage);
+  const currentLanguage = languages.find(l => l.code === language);
 
   return (
     <div className="py-4 md:py-8 space-y-6 md:space-y-8">
-      <Header title="Settings" subtitle="Customize your banking experience" />
+      <Header title={t('settings')} subtitle="Customize your banking experience" />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Appearance */}
         <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up">
-          <h3 className="font-semibold text-foreground mb-6">Appearance</h3>
+          <h3 className="font-semibold text-foreground mb-6">{t('appearance')}</h3>
           
           <div className="flex gap-4">
             <button
@@ -152,7 +153,7 @@ export default function Settings() {
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-white border border-border flex items-center justify-center">
                 <Sun size={24} className="text-yellow-500" />
               </div>
-              <p className="font-medium text-foreground text-center">Light Mode</p>
+              <p className="font-medium text-foreground text-center">{t('lightMode')}</p>
             </button>
 
             <button
@@ -167,19 +168,19 @@ export default function Settings() {
               <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-slate-800 flex items-center justify-center">
                 <Moon size={24} className="text-blue-400" />
               </div>
-              <p className="font-medium text-foreground text-center">Dark Mode</p>
+              <p className="font-medium text-foreground text-center">{t('darkMode')}</p>
             </button>
           </div>
         </div>
 
         {/* Notifications */}
         <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up" style={{ animationDelay: '100ms' }}>
-          <h3 className="font-semibold text-foreground mb-6">Notifications</h3>
+          <h3 className="font-semibold text-foreground mb-6">{t('notifications')}</h3>
           
           <div className="space-y-4">
             <SettingToggle
               icon={<Bell size={20} className="text-primary" />}
-              title="Push Notifications"
+              title={t('pushNotifications')}
               description="Receive instant alerts"
               enabled={settings.pushNotifications}
               onToggle={() => {
@@ -189,7 +190,7 @@ export default function Settings() {
             />
             <SettingToggle
               icon={<Mail size={20} className="text-primary" />}
-              title="Email Notifications"
+              title={t('emailNotifications')}
               description="Get updates via email"
               enabled={settings.emailNotifications}
               onToggle={() => {
@@ -199,7 +200,7 @@ export default function Settings() {
             />
             <SettingToggle
               icon={<Smartphone size={20} className="text-primary" />}
-              title="SMS Notifications"
+              title={t('smsNotifications')}
               description="Receive text messages"
               enabled={settings.smsNotifications}
               onToggle={() => {
@@ -212,12 +213,12 @@ export default function Settings() {
 
         {/* Security */}
         <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up" style={{ animationDelay: '150ms' }}>
-          <h3 className="font-semibold text-foreground mb-6">Security</h3>
+          <h3 className="font-semibold text-foreground mb-6">{t('security')}</h3>
           
           <div className="space-y-4">
             <SettingToggle
               icon={<Eye size={20} className="text-primary" />}
-              title="Biometric Login"
+              title={t('biometricLogin')}
               description="Use fingerprint or face ID"
               enabled={settings.biometric}
               onToggle={() => {
@@ -227,7 +228,7 @@ export default function Settings() {
             />
             <SettingToggle
               icon={<Shield size={20} className="text-primary" />}
-              title="Login Alerts"
+              title={t('loginAlerts')}
               description="Get notified of new logins"
               enabled={settings.loginAlerts}
               onToggle={() => {
@@ -237,13 +238,13 @@ export default function Settings() {
             />
             <SettingLink
               icon={<Lock size={20} className="text-primary" />}
-              title="Change Password"
+              title={t('changePassword')}
               description="Update your password"
               onClick={() => setShowPasswordDialog(true)}
             />
             <SettingLink
               icon={<CreditCard size={20} className="text-primary" />}
-              title="Manage Cards"
+              title={t('cards')}
               description="View and control your cards"
               onClick={() => navigate('/cards')}
             />
@@ -252,24 +253,24 @@ export default function Settings() {
 
         {/* More Options */}
         <div className="bg-card rounded-2xl border border-border p-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
-          <h3 className="font-semibold text-foreground mb-6">More</h3>
+          <h3 className="font-semibold text-foreground mb-6">{t('more')}</h3>
           
           <div className="space-y-4">
             <SettingLink
               icon={<Globe size={20} className="text-primary" />}
-              title="Language"
+              title={t('language')}
               description={currentLanguage?.nativeName || 'English'}
               onClick={() => setShowLanguageDialog(true)}
             />
             <SettingLink
               icon={<Shield size={20} className="text-primary" />}
-              title="Privacy Policy"
+              title={t('privacyPolicy')}
               description="Read our privacy terms"
               onClick={() => setShowPrivacyDialog(true)}
             />
             <SettingLink
               icon={<LogOut size={20} className="text-destructive" />}
-              title="Logout"
+              title={t('logout')}
               description="Sign out of your account"
               onClick={handleLogout}
               danger
@@ -288,7 +289,7 @@ export default function Settings() {
       <Dialog open={showLanguageDialog} onOpenChange={setShowLanguageDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Select Language</DialogTitle>
+            <DialogTitle>{t('language')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-2 mt-4">
             {languages.map((lang) => (
@@ -297,7 +298,7 @@ export default function Settings() {
                 onClick={() => handleLanguageChange(lang.code)}
                 className={cn(
                   'w-full flex items-center justify-between p-4 rounded-xl transition-colors',
-                  selectedLanguage === lang.code
+                  language === lang.code
                     ? 'bg-primary/10 border-2 border-primary'
                     : 'bg-secondary/50 hover:bg-secondary'
                 )}
@@ -306,7 +307,7 @@ export default function Settings() {
                   <span className="font-medium text-foreground">{lang.name}</span>
                   <span className="text-muted-foreground">({lang.nativeName})</span>
                 </div>
-                {selectedLanguage === lang.code && (
+                {language === lang.code && (
                   <Check size={20} className="text-primary" />
                 )}
               </button>
@@ -319,7 +320,7 @@ export default function Settings() {
       <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Change Password</DialogTitle>
+            <DialogTitle>{t('changePassword')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
@@ -360,7 +361,7 @@ export default function Settings() {
       <Dialog open={showPrivacyDialog} onOpenChange={setShowPrivacyDialog}>
         <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Privacy Policy</DialogTitle>
+            <DialogTitle>{t('privacyPolicy')}</DialogTitle>
           </DialogHeader>
           <div className="prose prose-sm dark:prose-invert mt-4 text-muted-foreground">
             <h4 className="text-foreground">1. Information Collection</h4>
