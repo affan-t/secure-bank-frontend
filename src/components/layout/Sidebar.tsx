@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { createContext, useContext, useState, ReactNode } from 'react';
+import nexbankLogo from '@/assets/nexbank-logo.png';
 
 // Create Sidebar Context for sharing collapsed state
 interface SidebarContextType {
@@ -73,14 +74,14 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
         <div className={cn('flex items-center gap-3 transition-opacity duration-300', collapsed && 'opacity-0 w-0 overflow-hidden')}>
-          <div className="w-10 h-10 rounded-xl gradient-card flex items-center justify-center shadow-glow">
-            <span className="text-xl font-bold text-white">N</span>
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow">
+            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
           <span className="font-display font-bold text-xl">NexBank</span>
         </div>
         {collapsed && (
-          <div className="w-10 h-10 rounded-xl gradient-card flex items-center justify-center shadow-glow mx-auto">
-            <span className="text-xl font-bold text-white">N</span>
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow mx-auto">
+            <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
         )}
       </div>

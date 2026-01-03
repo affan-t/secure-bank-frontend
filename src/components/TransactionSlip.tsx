@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { X, Download, CheckCircle, Printer, QrCode } from 'lucide-react';
 import { formatCurrency } from '@/data/bankData';
 import { useLanguage } from '@/contexts/LanguageContext';
+import nexbankLogo from '@/assets/nexbank-logo.png';
 
 interface TransactionSlipProps {
   isOpen: boolean;
@@ -219,6 +220,9 @@ export function TransactionSlip({ isOpen, onClose, transactionDetails }: Transac
         <div ref={slipRef} className="receipt-container">
           {/* Header - Bank Branding */}
           <div className="receipt-header bg-gradient-to-br from-[#1a1a2e] to-[#2d3561] text-white p-6 text-center">
+            <div className="flex justify-center mb-3">
+              <img src={nexbankLogo} alt="NexBank" className="w-16 h-16 object-contain" />
+            </div>
             <div className="bank-name text-3xl font-bold mb-1">NexBank</div>
             <div className="receipt-title text-sm opacity-90">Online Banking</div>
             <div className="text-xs mt-2 opacity-75">{t('transactionReceipt')}</div>
