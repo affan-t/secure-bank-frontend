@@ -79,7 +79,7 @@ export function Sidebar() {
           collapsed ? 'justify-center w-full' : 'justify-start w-full gap-3'
         )}>
           {/* Logo Icon - Always Visible */}
-          <div className="w-12 h-12 rounded-xl overflow-hidden shadow-glow flex-shrink-0 bg-[#0c1929]">
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-[#0c1929] border border-sidebar-border">
             <img 
               src={nexbankLogo} 
               alt="NexBank" 
@@ -129,31 +129,28 @@ export function Sidebar() {
               to={item.path}
               title={collapsed ? item.label : undefined}
               className={cn(
-                'flex items-center h-12 rounded-xl transition-all duration-200 group relative',
-                collapsed ? 'justify-center px-0' : 'justify-start px-4 gap-3',
+                'flex items-center h-10 rounded-lg transition-all duration-200 group relative',
+                collapsed ? 'justify-center px-0' : 'justify-start px-3 gap-2',
                 isActive
-                  ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-glow'
+                  ? 'bg-sidebar-primary text-sidebar-primary-foreground'
                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
               )}
             >
-              {/* Active indicator shimmer */}
+              {/* Active indicator bar */}
               {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer rounded-xl" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-sidebar-primary-foreground rounded-r" />
               )}
               
               {/* Icon - Always Visible */}
               <Icon 
-                size={22} 
-                className={cn(
-                  'flex-shrink-0 transition-transform duration-200 relative z-10',
-                  isActive && 'scale-110'
-                )} 
+                size={18} 
+                className="flex-shrink-0 relative z-10"
               />
               
               {/* Label - Hidden when collapsed */}
               <span 
                 className={cn(
-                  'font-medium whitespace-nowrap transition-all duration-300 ease-in-out relative z-10',
+                  'text-xs font-medium whitespace-nowrap transition-all duration-300 ease-in-out relative z-10',
                   collapsed 
                     ? 'opacity-0 w-0 overflow-hidden' 
                     : 'opacity-100 w-auto'
@@ -162,13 +159,6 @@ export function Sidebar() {
                 {item.label}
               </span>
               
-              {/* Active dot indicator */}
-              {isActive && !collapsed && (
-                <div className={cn(
-                  'absolute w-1.5 h-1.5 bg-sidebar-primary-foreground rounded-full animate-pulse',
-                  isRTL ? 'left-3' : 'right-3'
-                )} />
-              )}
             </Link>
           );
         })}
@@ -185,7 +175,7 @@ export function Sidebar() {
           <img
             src={user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'}
             alt="User"
-            className="w-10 h-10 rounded-full object-cover ring-2 ring-sidebar-primary/50 flex-shrink-0"
+            className="w-8 h-8 rounded-full object-cover ring-1 ring-sidebar-border flex-shrink-0"
           />
           
           {/* User Details - Hidden when collapsed */}
