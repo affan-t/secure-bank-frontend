@@ -45,12 +45,14 @@ export default function Login() {
     setIsLoading(true);
     
     try {
+      // First validate credentials
       const success = await login(email, password);
       if (success) {
-        toast.success('Welcome back!', {
-          description: 'Successfully logged in to your account.',
+        toast.success('Credentials verified', {
+          description: 'Redirecting to 2FA verification...',
         });
-        navigate('/dashboard');
+        // Redirect to 2FA page
+        navigate('/two-factor-auth', { state: { email } });
       } else {
         toast.error('Login failed', {
           description: 'Invalid email or password.',
@@ -73,32 +75,30 @@ export default function Login() {
         <div className="absolute inset-0">
           <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float" />
           <div className="absolute bottom-20 right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-white/10 rounded-full animate-spin-slow" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-white/5 rounded-full animate-spin-slow" style={{ animationDirection: 'reverse' }} />
         </div>
         
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
-          <div className="w-28 h-28 rounded-2xl overflow-hidden flex items-center justify-center mb-8 shadow-2xl animate-bounce-soft">
+          <div className="w-24 h-24 rounded-xl overflow-hidden flex items-center justify-center mb-6 shadow-xl animate-bounce-soft">
             <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-5xl font-display font-bold mb-4 text-center">NexBank</h1>
-          <p className="text-xl text-white/80 text-center max-w-md mb-12">
+          <h1 className="text-4xl font-display font-bold mb-3 text-center">NexBank</h1>
+          <p className="text-lg text-white/80 text-center max-w-md mb-10">
             Your trusted digital banking partner for a smarter financial future
           </p>
           
           {/* Features */}
-          <div className="grid gap-6 w-full max-w-sm">
-              {['Secure Transactions', 'Instant Transfers', '24/7 Support'].map((feature, i) => (
+          <div className="grid gap-4 w-full max-w-sm">
+            {['Secure Transactions', 'Instant Transfers', '24/7 Support'].map((feature, i) => (
               <div
                 key={feature}
-                className="flex items-center gap-4 p-4 bg-white/10 backdrop-blur-sm rounded-xl animate-slide-right"
+                className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg animate-slide-right"
                 style={{ animationDelay: `${i * 150}ms` }}
               >
-                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-                  <Check size={18} />
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <Check size={14} />
                 </div>
-                <span className="font-medium">{feature}</span>
+                <span className="text-sm font-medium">{feature}</span>
               </div>
             ))}
           </div>
@@ -108,92 +108,92 @@ export default function Login() {
       {/* Right Panel - Form */}
       <div className="w-full lg:w-1/2 flex flex-col bg-background">
         {/* Header */}
-        <div className="flex justify-between items-center p-6">
-          <div className="lg:hidden flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-glow">
+        <div className="flex justify-between items-center p-4">
+          <div className="lg:hidden flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg overflow-hidden">
               <img src={nexbankLogo} alt="NexBank" className="w-full h-full object-cover" />
             </div>
-            <span className="font-display font-bold text-xl">NexBank</span>
+            <span className="font-display font-bold text-lg">NexBank</span>
           </div>
           <button
             onClick={toggleTheme}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-secondary hover:bg-secondary/80 transition-all duration-300 hover:scale-105 ml-auto"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-all duration-300 ml-auto"
           >
             {theme === 'dark' ? (
-              <Sun size={18} className="text-warning" />
+              <Sun size={16} className="text-warning" />
             ) : (
-              <Moon size={18} className="text-primary" />
+              <Moon size={16} className="text-primary" />
             )}
           </button>
         </div>
 
         {/* Form Container */}
-        <div className="flex-1 flex items-center justify-center p-6 md:p-12">
-          <div className="w-full max-w-md animate-fade-in">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl font-display font-bold text-foreground mb-2">
+        <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+          <div className="w-full max-w-sm animate-fade-in">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-display font-bold text-foreground mb-1">
                 Welcome Back
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 Sign in to continue to your account
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email Field */}
-              <div className="space-y-2 animate-slide-up" style={{ animationDelay: '100ms' }}>
-                <label className="text-sm font-medium text-foreground">Email Address</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     className={cn(
-                      'w-full h-14 pl-12 pr-4 rounded-xl bg-secondary/50 border-2 transition-all duration-300 input-animated',
+                      'w-full h-11 pl-10 pr-3 rounded-lg bg-secondary/50 border text-sm transition-all duration-300',
                       errors.email ? 'border-destructive' : 'border-transparent focus:border-primary'
                     )}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-destructive animate-slide-down">{errors.email}</p>
+                  <p className="text-xs text-destructive">{errors.email}</p>
                 )}
               </div>
 
               {/* Password Field */}
-              <div className="space-y-2 animate-slide-up" style={{ animationDelay: '200ms' }}>
-                <label className="text-sm font-medium text-foreground">Password</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
                     className={cn(
-                      'w-full h-14 pl-12 pr-12 rounded-xl bg-secondary/50 border-2 transition-all duration-300 input-animated',
+                      'w-full h-11 pl-10 pr-10 rounded-lg bg-secondary/50 border text-sm transition-all duration-300',
                       errors.password ? 'border-destructive' : 'border-transparent focus:border-primary'
                     )}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-destructive animate-slide-down">{errors.password}</p>
+                  <p className="text-xs text-destructive">{errors.password}</p>
                 )}
               </div>
 
               {/* Forgot Password */}
-              <div className="flex justify-end animate-slide-up" style={{ animationDelay: '300ms' }}>
+              <div className="flex justify-end">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-primary hover:underline transition-all"
+                  className="text-xs text-primary hover:underline transition-all"
                 >
                   Forgot password?
                 </Link>
@@ -204,27 +204,26 @@ export default function Login() {
                 type="submit"
                 disabled={isLoading}
                 className={cn(
-                  'w-full h-14 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 transition-all duration-300 animate-slide-up btn-ripple',
-                  'gradient-bg text-white shadow-glow hover:shadow-xl hover:scale-[1.02]',
+                  'w-full h-11 rounded-lg font-medium flex items-center justify-center gap-2 transition-all duration-300',
+                  'gradient-bg text-white hover:opacity-90',
                   isLoading && 'opacity-70 cursor-not-allowed'
                 )}
-                style={{ animationDelay: '400ms' }}
               >
                 {isLoading ? (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <>
                     Sign In
-                    <ArrowRight size={20} />
+                    <ArrowRight size={16} />
                   </>
                 )}
               </button>
             </form>
 
             {/* Sign Up Link */}
-            <p className="text-center text-muted-foreground mt-8 animate-fade-in" style={{ animationDelay: '700ms' }}>
+            <p className="text-center text-sm text-muted-foreground mt-6">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-primary font-semibold hover:underline">
+              <Link to="/signup" className="text-primary font-medium hover:underline">
                 Sign up
               </Link>
             </p>

@@ -6,10 +6,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { BalanceVisibilityProvider } from "@/contexts/BalanceVisibilityContext";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
+import TwoFactorAuth from "./pages/TwoFactorAuth";
 import Dashboard from "./pages/Dashboard";
 import Accounts from "./pages/Accounts";
 import Transfer from "./pages/Transfer";
@@ -36,6 +38,7 @@ function AppRoutes() {
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
       <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/two-factor-auth" element={<TwoFactorAuth />} />
       
       <Route path="/" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
@@ -60,13 +63,15 @@ const App = () => (
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <AppRoutes />
-            </BrowserRouter>
-          </TooltipProvider>
+          <BalanceVisibilityProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </TooltipProvider>
+          </BalanceVisibilityProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>
